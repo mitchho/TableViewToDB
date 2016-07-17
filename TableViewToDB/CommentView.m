@@ -149,6 +149,7 @@
     NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL: myUrl];
     [urlRequest setTimeoutInterval: 60.0f];
     [urlRequest setHTTPMethod: @"POST"];
+    //  tell it which table row to delete
     NSData *requestBodyData = [self.commentId dataUsingEncoding: NSUTF8StringEncoding];
     urlRequest.HTTPBody = requestBodyData;
     
