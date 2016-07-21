@@ -137,7 +137,7 @@
 {
     NSLog(@"commentsTableViewRowTapped.theInt from deleteButtonTapped: %d", self.commentsTableViewRowTapped.theInt);
  //   NSLog(@"comments from deleteButtonTapped: %@", self.comments);
-    NSLog(@"# of comments from deleteButtonTapped: %lu", (unsigned long)[self.comments count]);
+    NSLog(@"# of commentsArray from deleteButtonTapped: %lu", (unsigned long)[self.commentsArray count]);
     
     NSString *hostServer = @"http://localhost:8080/";
  //   NSString *hostServer = @"http://www.chiltonstudios.com/";
@@ -159,7 +159,7 @@
     [NSURLConnection connectionWithRequest: urlRequest
                                   delegate: self];
     
-    [self.comments removeObjectAtIndex: self.commentsTableViewRowTapped.theInt];
+    [self.commentsArray removeObjectAtIndex: self.commentsTableViewRowTapped.theInt];
     [self.commentsTableView reloadData];
     
     [self removeFromSuperview];

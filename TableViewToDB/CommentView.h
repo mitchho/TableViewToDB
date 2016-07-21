@@ -18,7 +18,7 @@
 @property (nonatomic, strong) UILabel *nameLabel;
 @property (nonatomic, strong) UILabel *emailLabel;
 @property (nonatomic, strong) UILabel *commentLabel;
-@property (nonatomic, strong) NSMutableArray *comments;
+@property (nonatomic, strong) NSMutableArray *commentsArray;
 @property (nonatomic, strong) UITableView *commentsTableView;
 
 @end

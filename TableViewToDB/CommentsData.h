@@ -18,7 +18,7 @@
 
 @interface CommentsData : NSObject 
 
-@property (nonatomic, strong) NSMutableArray *comments;
+@property (nonatomic, strong) NSMutableArray *commentsArray;
 @property (nonatomic, strong) UITableView *commentsTableView;
 @property (nonatomic, weak) id<CommentsDataDelegate> delegate;
 

@@ -31,16 +31,89 @@
     [urlRequest setTimeoutInterval: 60.0f];
     [urlRequest setHTTPMethod: @"POST"];
     
-    //  create the NSURLConnection and set delegate to self
-    //  note: I am pretty sure this connection is done
-    //  asynchronously, ie does not block the main thread
-    [NSURLConnection connectionWithRequest: urlRequest
-                                  delegate: self];
+     //  note: this method happens asynchonously (off main queue)
+     //  but NSURLConnection got deprecated in iOS 9 so use
+     //  NSURLSession instead.
+     //  [NSURLConnection connectionWithRequest: urlRequest
+     //                             delegate: self];
+    
+    NSURLSession *session = [NSURLSession sharedSession];
+    
+    NSURLSessionDataTask *dataTask = [session dataTaskWithRequest: urlRequest
+                                                completionHandler: ^(NSData *data, NSURLResponse *response, NSError *error) {
+                                                    
+                                                    NSDictionary *json = [NSJSONSerialization JSONObjectWithData: data
+                                                                                                         options: 0
+                                                                                                           error: nil];
+                                                //    NSLog(@"%@", json);
+                                                    
+                                                    if ((json != nil) && (error == nil))
+                                                    {
+                                                        NSLog(@"successfully deserialized");
+                                                        [self convertJSONToCommentsArray: json];
+                                                    }
+                                                }];
+    
+    [dataTask resume];
 }
 
--(void) deleteComment: (NSUInteger) row
+-(void) convertJSONToCommentsArray: (NSDictionary *)json
 {
+    //  create an array to store the Comment dictionary objects
+    NSMutableArray *commentsArrayOfDicts = [[NSMutableArray alloc] init];
+    [self.commentsArray removeAllObjects];
     
+    NSNumber *success = [json objectForKey: @"success"];
+    
+    if ([success boolValue] == YES)
+    {
+        //  note: commentsArray is an array of dictionaries
+        //  the keys are: "comment_id", "name", "email",
+        //  "comment", and "date"
+        commentsArrayOfDicts = [json objectForKey: @"commentList"];
+        NSLog(@"commentsArrayOfDicts: %@", commentsArrayOfDicts);
+        
+        //  loop thru the json objects, create comment objects
+        //  and add them to the comments array
+        for (int i = 0; i < commentsArrayOfDicts.count; i++)
+        {
+            NSDictionary *jsonElement = [commentsArrayOfDicts objectAtIndex: i];
+            // NSLog(@"jsonElement: %@", jsonElement);
+            
+            //  create a new comment object and set its
+            //  properties to jsonElement properties
+            Comment *newComment = [[Comment alloc] init];
+            
+            //  newComment.commentId = jsonElement[@"comment_id"];
+            //  not sure what the "comment_id" value is as far
+            //  as the data type (NSNumber ?) so lets convert
+            //  it to a string. The others were strings all along.
+            newComment.commentId = [NSString stringWithFormat: @"%@", jsonElement[@"comment_id"]];
+            newComment.name = jsonElement[@"name"];
+            newComment.email = jsonElement[@"email"];
+            newComment.comment = jsonElement[@"comment"];
+            newComment.date = jsonElement[@"date"];
+            
+            //  add this comment to the comments array
+            [self.commentsArray addObject: newComment];
+            
+        }  //  end for loop
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            [self.commentsTableView reloadData];
+            
+        });
+
+    }  //  end success
+    
+    //  ready to notify delegate that data is ready and
+    //  pass back items
+    
+    if (self.delegate)
+    {
+        [self.delegate commentsDownloaded: self.commentsArray];
+    }
 }
 
 #pragma mark NSURLConnectionDataDelegate methods
@@ -63,7 +136,7 @@ didReceiveResponse: (NSURLResponse *)response
 {
     //  create an array to store the Comment dictionary objects
     NSMutableArray *commentsArrayOfDicts = [[NSMutableArray alloc] init];
-    [self.comments removeAllObjects];
+    [self.commentsArray removeAllObjects];
     
     NSString *theData = [[NSString alloc] initWithData: downloadedData
                                               encoding: NSUTF8StringEncoding];
@@ -123,7 +196,7 @@ didReceiveResponse: (NSURLResponse *)response
                 newComment.date = jsonElement[@"date"];
                 
                 //  add this comment to the comments array
-                [self.comments addObject: newComment];
+                [self.commentsArray addObject: newComment];
                 
             }  //  end for loop
             
@@ -141,7 +214,7 @@ didReceiveResponse: (NSURLResponse *)response
     
     if (self.delegate)
     {
-        [self.delegate commentsDownloaded: self.comments];
+        [self.delegate commentsDownloaded: self.commentsArray];
     }
     
 }

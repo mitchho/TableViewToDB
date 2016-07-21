@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		301F48251D4082B30095F438 /* HeaderTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 301F48241D4082B30095F438 /* HeaderTableViewCell.m */; };
 		3075AEE51B48C81800D8DC95 /* CommentsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3075AEE41B48C81700D8DC95 /* CommentsTableViewCell.m */; };
 		309133C51CAE82870056C716 /* CustomColors.m in Sources */ = {isa = PBXBuildFile; fileRef = 309133C41CAE82870056C716 /* CustomColors.m */; };
 		309133C81CAE838B0056C716 /* SteadyInt.m in Sources */ = {isa = PBXBuildFile; fileRef = 309133C71CAE838B0056C716 /* SteadyInt.m */; };
@@ -24,6 +25,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		301F48231D4082B30095F438 /* HeaderTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeaderTableViewCell.h; sourceTree = "<group>"; };
+		301F48241D4082B30095F438 /* HeaderTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeaderTableViewCell.m; sourceTree = "<group>"; };
 		3075AEE31B48C81700D8DC95 /* CommentsTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentsTableViewCell.h; sourceTree = "<group>"; };
 		3075AEE41B48C81700D8DC95 /* CommentsTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentsTableViewCell.m; sourceTree = "<group>"; };
 		309133C31CAE82870056C716 /* CustomColors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomColors.h; sourceTree = "<group>"; };
@@ -99,6 +102,8 @@
 				3075AEE41B48C81700D8DC95 /* CommentsTableViewCell.m */,
 				309133C91CAE9A250056C716 /* TableCellBackground.h */,
 				309133CA1CAE9A250056C716 /* TableCellBackground.m */,
+				301F48231D4082B30095F438 /* HeaderTableViewCell.h */,
+				301F48241D4082B30095F438 /* HeaderTableViewCell.m */,
 				309133CF1CAEBBCC0056C716 /* ToolbarBackground.h */,
 				309133D01CAEBBCC0056C716 /* ToolbarBackground.m */,
 				30E00DCE1B0D264C006AF9D5 /* Images.xcassets */,
@@ -193,6 +198,7 @@
 				309133CB1CAE9A250056C716 /* TableCellBackground.m in Sources */,
 				309133C51CAE82870056C716 /* CustomColors.m in Sources */,
 				30E00DCA1B0D264C006AF9D5 /* ViewController.m in Sources */,
+				301F48251D4082B30095F438 /* HeaderTableViewCell.m in Sources */,
 				309133D11CAEBBCC0056C716 /* ToolbarBackground.m in Sources */,
 				30E00DC71B0D264C006AF9D5 /* AppDelegate.m in Sources */,
 				30E00DEC1B0D2F8B006AF9D5 /* Comment.m in Sources */,

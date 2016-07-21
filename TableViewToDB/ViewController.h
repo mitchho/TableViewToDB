@@ -9,13 +9,12 @@
 #import <UIKit/UIKit.h>
 #import "CustomColors.h"
 #import "SteadyInt.h"
-//#import "HomeModel.h"
-//#import "HomeModel2.h"
 #import "Comment.h"
 #import "CommentsData.h"
 #import "CommentView.h"
 #import "CommentsTableViewCell.h"
 #import "TableCellBackground.h"
+#import "HeaderTableViewCell.h"
 
 @interface ViewController : UIViewController <CommentsDataDelegate, UITableViewDataSource, UITableViewDelegate>
  

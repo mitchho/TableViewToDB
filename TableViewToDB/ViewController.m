@@ -21,8 +21,8 @@
     CustomColors *customColors;
     SteadyInt *commentsTableViewRowTapped;
     CommentsData *commentsData;
-    NSArray *feedItems;
-    NSMutableArray *comments;
+    NSMutableArray *commentsArray;
+//    NSMutableArray *comments;
     UIRefreshControl *refreshControl;
 
 }
@@ -39,17 +39,18 @@
     
     self.view.backgroundColor = customColors.casinoGreen;
     
-    feedItems = [[NSArray alloc] init];
+    commentsArray = [[NSMutableArray alloc] init];
       
     [self setupCommentsTableView];
+    [self setupCommentsDataObject];
     [self setupRefreshControl];
     
     commentsTableViewRowTapped = [[SteadyInt alloc] init];
-    commentsData = [[CommentsData alloc] init];
-    comments = [[NSMutableArray alloc] init];
-    commentsData.delegate = self;
-    commentsData.comments = comments;
-    commentsData.commentsTableView = self.commentsTableView;
+//    commentsData = [[CommentsData alloc] init];
+//    comments = [[NSMutableArray alloc] init];
+//    commentsData.delegate = self;
+//    commentsData.commentsArray = comments;
+//    commentsData.commentsTableView = self.commentsTableView;
     
     [commentsData downloadComments];
   //  [self.commentsTableView reloadData];
@@ -84,6 +85,16 @@
     
 }
 
+-(void) setupCommentsDataObject
+{
+//    commentsTableViewRowTapped = [[SteadyInt alloc] init];
+    commentsData = [[CommentsData alloc] init];
+    commentsData.delegate = self;
+//    commentsData.commentsArray = [[NSMutableArray alloc] init];
+    commentsData.commentsArray = commentsArray;
+    commentsData.commentsTableView = self.commentsTableView;
+}
+
 -(void) setupRefreshControl
 {
     refreshControl = [[UIRefreshControl alloc] init];
@@ -101,14 +112,14 @@
 {
     self.commentsTableView.userInteractionEnabled = NO;
     
-    Comment *comment = [feedItems objectAtIndex: index];
+    Comment *comment = [commentsArray objectAtIndex: index];
     CommentView *commentView;
     
     if (commentView == nil)
         commentView = [[CommentView alloc] initWithFrame: CGRectMake((DEVICE_WIDTH - COMMENT_VIEW_WIDTH) / 2, 180.0, COMMENT_VIEW_WIDTH, COMMENT_VIEW_HEIGHT)];
     
     commentView.commentsTableViewRowTapped = commentsTableViewRowTapped;
-    commentView.comments = comments;
+    commentView.commentsArray = commentsArray;
     commentView.commentId = comment.commentId;
     commentView.nameLabel.text = [[NSString alloc] initWithFormat: @"Name: %@", comment.name];
     commentView.emailLabel.text = [[NSString alloc] initWithFormat: @"email: %@", comment.email];
@@ -121,12 +132,15 @@
 
 #pragma mark CommentsData delegate method
 
--(void) commentsDownloaded: (NSArray *)commentsArray
+-(void) commentsDownloaded: (NSMutableArray *)commentsArrayFromJSON
 {
     //  this delegate method will get called when
     //  items finish downloading
-    feedItems = commentsArray;
-    [self.commentsTableView reloadData];
+    commentsArray = commentsArrayFromJSON;
+    
+    //  note: don't reload the table here - it gets
+    //  reloaded in CommentsData
+    //  [self.commentsTableView reloadData];
 }
 
 #pragma mark TableView data source methods
@@ -135,9 +149,15 @@
  numberOfRowsInSection: (NSInteger)section
 {
     NSInteger numberOfRows;
-    numberOfRows = feedItems.count;
+    numberOfRows = commentsArray.count;
     
     return numberOfRows;
+}
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    // Return the number of sections.
+    return 1;
 }
 
 -(UITableViewCell*)tableView: (UITableView *)tableView
@@ -159,9 +179,9 @@
         //            cell.backgroundView.alpha = 0.51;
     }
      
-    if (feedItems.count > 0)
+    if (commentsArray.count > 0)
     {
-        Comment *comment = [feedItems objectAtIndex: indexPath.row];
+        Comment *comment = [commentsArray objectAtIndex: indexPath.row];
        
         theCell.commentsIdLabel.text = comment.commentId;
         theCell.commentsDateLabel.text = comment.date;
@@ -169,10 +189,11 @@
     //    NSLog(@"commentId: %@", comment.commentId);
     //    NSLog(@"date: %@", comment.date);
     }
-   
+    
+    /*
     NSLayoutConstraint *idLabelXConstraint = [NSLayoutConstraint
                                                 constraintWithItem: theCell.commentsIdLabel
-                                                attribute: NSLayoutAttributeCenterX
+                                                attribute: NSLayoutAttributeLeft
                                                 relatedBy: NSLayoutRelationEqual
                                                 toItem: theCell
                                                 attribute: NSLayoutAttributeRight
@@ -194,11 +215,11 @@
     
     NSLayoutConstraint *dateLabelXConstraint = [NSLayoutConstraint
                                                  constraintWithItem: theCell.commentsDateLabel
-                                                 attribute: NSLayoutAttributeCenterX
+                                                 attribute: NSLayoutAttributeLeft
                                                  relatedBy: NSLayoutRelationEqual
                                                  toItem: theCell
                                                  attribute: NSLayoutAttributeRight
-                                                 multiplier: 0.69
+                                                 multiplier: 0.60
                                                  constant: 0.0];
     
     NSLayoutConstraint *dateLabelYConstraint = [NSLayoutConstraint
@@ -213,29 +234,55 @@
     theCell.commentsDateLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [theCell addConstraint: dateLabelXConstraint];
     [theCell addConstraint: dateLabelYConstraint];
-  
+  */
+    
     return theCell;
 }
 
-/*
--(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+
+-(UIView*)   tableView:(UITableView *)tableView
+viewForHeaderInSection:(NSInteger)section
 {
-    // 1. Dequeue the custom header cell
-    self.headerCell = [tableView dequeueReusableCellWithIdentifier: @"HeaderCell"];
     
-    // 2. Set the various properties
-    self.headerCell.name.text = @"Name";
-    [self.headerCell.name sizeToFit];
+    HeaderTableViewCell *headerCell;
+    UILabel *headerCellLabel;
     
-    self.headerCell.latitude.text = @"Latitude";
-    [self.headerCell.latitude sizeToFit];
+    if (headerCell == nil)
+        headerCell = [[HeaderTableViewCell alloc] initWithFrame: CGRectMake(0.0, 0.0, self.commentsTableView.frame.size.width, 39.0)];
     
-//    headerCell.image.image = [UIImage imageNamed:@"smiley-face"];
+    headerCell.backgroundColor = [UIColor colorWithRed: (130.0f/255.0f)
+                                                 green: (203.0f/255.0f)
+                                                  blue: (96.0f/255.0f)
+                                                 alpha: 1.0];
     
-    // 3. And return
-    return self.headerCell;
+    if (headerCellLabel == nil)
+    {
+        headerCellLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.commentsTableView.bounds.size.width * 0.2, 10.0, self.commentsTableView.bounds.size.width * 0.60, 24.0)];
+    //    headerCellLabel.center = headerCell.center;
+        headerCellLabel.textAlignment = NSTextAlignmentCenter;
+        headerCellLabel.textColor = [UIColor colorWithRed: 1.0
+                                                    green: 1.0
+                                                     blue: 1.0
+                                                    alpha: 0.75];
+        
+        headerCellLabel.backgroundColor = [UIColor clearColor];
+        headerCellLabel.text = @"www.chiltonstudios.com User Comments";
+        
+        [headerCell addSubview: headerCellLabel];
+    }
+    
+    return headerCell;
+  
 }
-*/
+
+-(CGFloat) tableView: (UITableView *)tableView
+heightForHeaderInSection: (NSInteger)section
+{
+    
+    CGFloat headerCellHeight = 39.0;
+    
+    return headerCellHeight;
+}
 
 #pragma mark - TableView delegate methods
 
@@ -257,11 +304,14 @@ didSelectRowAtIndexPath: (NSIndexPath *)indexPath
 - (void)refresh: (UIRefreshControl *)refresher
 {
     NSLog(@"in refresh:");
-    refresher.attributedTitle = [[NSAttributedString alloc] initWithString:@"Refreshing data..."];
+    refresher.attributedTitle = [[NSAttributedString alloc] initWithString:@"Refreshing Comments..."];
     // do your refresh here and reload the tableview
     [commentsData downloadComments];
     [refresher endRefreshing];
-    [self.commentsTableView reloadData];
+    
+    //  note: don't reload the table here - it gets
+    //  reloaded in CommentsData
+    // [self.commentsTableView reloadData];
     
 }
 
