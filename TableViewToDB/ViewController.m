@@ -263,6 +263,28 @@ viewForHeaderInSection:(NSInteger)section
         headerCellLabel.text = @"www.chiltonstudios.com User Comments";
         
         [headerCell addSubview: headerCellLabel];
+        
+        NSLayoutConstraint *headerCellLabelXConstraint = [NSLayoutConstraint
+                                                    constraintWithItem: headerCellLabel
+                                                    attribute: NSLayoutAttributeCenterX
+                                                    relatedBy: NSLayoutRelationEqual
+                                                    toItem: headerCell
+                                                    attribute: NSLayoutAttributeCenterX
+                                                    multiplier: 1.0
+                                                    constant: 0.0];
+        
+        NSLayoutConstraint *headerCellLabelYConstraint = [NSLayoutConstraint
+                                                    constraintWithItem: headerCellLabel
+                                                    attribute: NSLayoutAttributeCenterY
+                                                    relatedBy: NSLayoutRelationEqual
+                                                    toItem: headerCell
+                                                    attribute: NSLayoutAttributeCenterY
+                                                    multiplier: 1.0
+                                                    constant: 0.0];
+        
+        headerCellLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        [headerCell addConstraint: headerCellLabelXConstraint];
+        [headerCell addConstraint: headerCellLabelYConstraint];
     }
     
     return headerCell;
