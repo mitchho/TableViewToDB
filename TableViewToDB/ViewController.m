@@ -46,14 +46,9 @@
     [self setupRefreshControl];
     
     commentsTableViewRowTapped = [[SteadyInt alloc] init];
-//    commentsData = [[CommentsData alloc] init];
-//    comments = [[NSMutableArray alloc] init];
-//    commentsData.delegate = self;
-//    commentsData.commentsArray = comments;
-//    commentsData.commentsTableView = self.commentsTableView;
     
     [commentsData downloadComments];
-  //  [self.commentsTableView reloadData];
+  
 }
 
 #pragma mark - viewDidLoad methods
@@ -87,10 +82,9 @@
 
 -(void) setupCommentsDataObject
 {
-//    commentsTableViewRowTapped = [[SteadyInt alloc] init];
+ 
     commentsData = [[CommentsData alloc] init];
     commentsData.delegate = self;
-//    commentsData.commentsArray = [[NSMutableArray alloc] init];
     commentsData.commentsArray = commentsArray;
     commentsData.commentsTableView = self.commentsTableView;
 }
